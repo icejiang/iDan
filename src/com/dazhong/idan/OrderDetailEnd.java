@@ -1,27 +1,18 @@
 package com.dazhong.idan;
 
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import android.R.integer;
-import android.R.string;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class OrderDetailEnd extends Activity implements OnClickListener {
 	
@@ -128,7 +119,12 @@ public class OrderDetailEnd extends Activity implements OnClickListener {
 		endTime.setText(noteInfo.getServiceEnd());
 		type.setText(taskInfo.ServiceTypeName());
 		int totalMile = Integer.parseInt(noteInfo.getRouteEnd())-Integer.parseInt(noteInfo.getRouteBegin())-(noteInfo.getPauseEnd()-noteInfo.getPauseStart());
-		mile.setText(totalMile+"公里");
+		
+		
+		
+		
+		
+		mile.setText(totalMile+"公里"+   " 自动："+noteInfo.getEndTime());
 		noteInfo.setDoServiceKms(totalMile);
 		noteInfo.setRouteEnd((Integer.parseInt(noteInfo.getRouteBegin())+totalMile)+"");
 		DateFormat df = new SimpleDateFormat("HH:mm");
@@ -455,14 +451,6 @@ public class OrderDetailEnd extends Activity implements OnClickListener {
 		return true;
 
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

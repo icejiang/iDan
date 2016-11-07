@@ -1,15 +1,27 @@
 package com.dazhong.idan;
 
+import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.baidu.trace.OnEntityListener;
+import com.baidu.trace.OnStartTraceListener;
+import com.baidu.trace.TraceLocation;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -71,6 +83,17 @@ public class OrderDetail extends Activity {
 	private NoteInfo pauseNote;
 	private TextView contacter;
 	private TextView contacterNum;
+	 /**
+     * 开启轨迹服务监听器
+     */
+    private OnStartTraceListener startTraceListener = null;
+    /**
+     * Entity监听器
+     */
+//    private OnEntityListener entityListener = null;
+    private TrackUploadHandler mHandler = null;
+    private BaiduUtil baiduUtil;
+    private myApplication trackApp;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +112,7 @@ public class OrderDetail extends Activity {
 		getInfoValue.setTaskRead(iDanApp.getInstance().getEMPLOYEEID(), taskInfo.TaskID());
 		findview();
 		setData();
+		mHandler = new TrackUploadHandler(this);
 		try {
 			myGetStateInfo = getStateInfo.getInstance(getApplicationContext());
 			myStateInfo = myGetStateInfo.getStateinfo();
@@ -146,10 +170,21 @@ public class OrderDetail extends Activity {
 													"路码不能为空",
 													Toast.LENGTH_SHORT).show();
 										} else {
+											baiduUtil = new BaiduUtil();
+											trackApp = (myApplication) getApplicationContext();
+											
+											initOnStartTraceListener();
+//											initOnEntityListener();
+											baiduUtil.startTrace(trackApp, startTraceListener);
+//											trackApp.getClient().queryRealtimeLoc(trackApp.getServiceId(), entityListener);
+											int startTime = (int) (System.currentTimeMillis() / 1000);
+											
 											myStateInfo.setCurrentKMS(input);
 											noteInfo = new NoteInfo();
 											noteInfo.setRouteBegin(input);
+											noteInfo.setStartTime(startTime);
 											putDataIntoNote();
+											myStateInfo.setCurrentNote(null);
 											myStateInfo.setCurrentNote(noteInfo);
 											myGetStateInfo.setStateinfo(myStateInfo);
 											Intent intent = new Intent();
@@ -240,17 +275,6 @@ public class OrderDetail extends Activity {
 													"路码不能为空",
 													Toast.LENGTH_SHORT).show();
 										} else {
-//											myStateInfo.setCurrentKMS(input);
-//											noteInfo = new NoteInfo();
-//											noteInfo.setRouteBegin(input);
-//											putDataIntoNote();
-//											myStateInfo.setCurrentNote(noteInfo);
-//											myGetStateInfo.setStateinfo(myStateInfo);
-//											Intent intent = new Intent();
-//											intent.setClass(OrderDetail.this,
-//													InService.class);
-//											startActivity(intent);
-											
 											startRoute.setText(input);
 										}
 									}
@@ -463,5 +487,46 @@ public class OrderDetail extends Activity {
 		return super.onKeyDown(keyCode, event);
 	}
 	
+	
+	/**
+     * 初始化OnStartTraceListener
+     */
+    private void initOnStartTraceListener() {
+    	
+		if (null == startTraceListener) {
+			// 初始化startTraceListener
+			startTraceListener = new OnStartTraceListener() {
+
+				// 开启轨迹服务回调接口（arg0 : 消息编码，arg1 : 消息内容，详情查看类参考）
+				public void onTraceCallback(int arg0, String arg1) {
+					// TODO Auto-generated method stub
+					 mHandler.obtainMessage(arg0, "开启轨迹服务回调接口消息 [消息编码 : " + arg0 + "，消息内容 : " + arg1 + "]").sendToTarget();
+				}
+
+				// 轨迹服务推送接口（用于接收服务端推送消息，arg0 : 消息类型，arg1 : 消息内容，详情查看类参考）
+				public void onTracePushCallback(byte arg0, String arg1) {
+					// TODO Auto-generated method stub
+				}
+
+			};
+		}
+    }
+    
+	
+	static class TrackUploadHandler extends Handler {
+        WeakReference<OrderDetail> trackUpload;
+
+        TrackUploadHandler(OrderDetail trackUploadFragment) {
+            trackUpload = new WeakReference<OrderDetail>(trackUploadFragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+        	OrderDetail tu = trackUpload.get();
+//            Toast.makeText(tu.trackApp, (String) msg.obj, Toast.LENGTH_LONG).show();
+            Log.i("jxb", (String) msg.obj);
+
+        }
+    }
 	
 }

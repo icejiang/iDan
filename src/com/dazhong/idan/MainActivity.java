@@ -475,7 +475,6 @@ public class MainActivity extends Activity {
 			holder.company.setText(taskInfo.getCustomerCompany());
 			String isUpdate = taskInfo.getIsUpdate();
 			int readmark = taskInfo.getReadmark();
-			Log.i("jxb", "readmark = "+readmark+"  isupdate = "+isUpdate);
 			if (taskInfo.getRouteNoteCount() > 0){
 				holder.isDone.setVisibility(View.VISIBLE);
 				holder.isDone.setText("рямЙЁи");

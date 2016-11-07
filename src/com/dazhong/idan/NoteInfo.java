@@ -187,7 +187,31 @@ public class NoteInfo implements Serializable {
 	 * 签名地址
 	 * */
 	private String pictureAddress;
+	/**
+	 * 开始时间
+	 * */
+	private int startTime;
+	/**
+	 * 结束时间
+	 * */
+	private int endTime;
 	
+	public int getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(int startTime) {
+		this.startTime = startTime;
+	}
+
+	public int getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(int endTime) {
+		this.endTime = endTime;
+	}
+
 	public String getPictureAddress() {
 		return pictureAddress;
 	}

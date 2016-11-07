@@ -268,7 +268,6 @@ public abstract class getInfoValue {
 			for (String sinf : listInfo) {
 				taskinfo = new TaskInfo();
 				taskinfo.setRouteNoteCount(Integer.parseInt(getDZService.getInfoValue(sinf,"RouteNoteCount")));
-				Log.i("jxb", "count = "+Integer.parseInt(getDZService.getInfoValue(sinf,"RouteNoteCount")));
 				taskinfo.setBookman(getDZService.getInfoValue(sinf, "Order"));
 				taskinfo.setBooktel(getDZService.getInfoValue(sinf,
 						"OrderPhone"));

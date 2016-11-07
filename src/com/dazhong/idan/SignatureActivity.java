@@ -107,6 +107,7 @@ public class SignatureActivity extends Activity implements OnClickListener{
 													.saveNoteInfo(noteInfo);
 											Log.i("jxb", "上传失败,路单已保存");
 										}
+										myStateInfo.setCurrentNote(null);
 										Intent intent = new Intent();
 //										intent.setClass(
 //												getApplicationContext(),
